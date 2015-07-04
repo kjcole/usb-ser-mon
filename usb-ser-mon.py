@@ -85,7 +85,7 @@ def usb_serial_mon(monitor, device, baud=115200, debug=False, echo=False):
     port_name = device.device_node
     log_print("USB Serial device{0} connected @{1}\r".format(
               extra_info(device), port_name))
-    log_print("Use Control-{0:c} to exit.\r".format(chr(ord(EXIT_CHAR) + ord("@"))))
+    log_print("Use Control-{0:c} to exit.\r".format(ord(EXIT_CHAR) + ord("@")))
 
     if device["ID_VENDOR"].startswith("Synthetos"):
         echo = True
@@ -122,8 +122,8 @@ def usb_serial_mon(monitor, device, baud=115200, debug=False, echo=False):
         for fileno, _ in events:
             if fileno == monitor.fileno():
                 dev = monitor.poll()
-                if (dev.device_node != port_name or
-                        dev.action != "remove"):
+                if ((dev.device_node != port_name) or
+                    (dev.action      != "remove")):
                     continue
                 log_print("USB Serial device @{0} disconnected.\r".format(port_name))
                 log_print("\r")
@@ -139,7 +139,7 @@ def usb_serial_mon(monitor, device, baud=115200, debug=False, echo=False):
                     return
                 if debug:
                     for x in data:
-                        log_print("Serial.Read '{0:c}' 0x{1:02X}\r".format(x, ord(x))))
+                        log_print("Serial.Read '{0:c}' 0x{0:02X}\r".format(ord(x)))
                 pos = 0
                 while True:
                     nl_pos = data.find("\n", pos)
@@ -158,7 +158,7 @@ def usb_serial_mon(monitor, device, baud=115200, debug=False, echo=False):
                 data = sys.stdin.read(1)
                 if debug:
                     for x in data:
-                        log_print("stdin.Read '{0:c}' 0x{1:02X}\r".format(x, ord(x)))
+                        log_print("stdin.Read '{0:c}' 0x{0:02X}\r".format(ord(x)))
                 if data[0] == EXIT_CHAR:
                     raise KeyboardInterrupt
                 if echo:
@@ -183,7 +183,7 @@ def main():
         prog="usb-ser-mon.py",
         usage="%(prog)s [options] [command]",
         description="Monitor serial output from USB Serial devices",
-        epilog="Press Control-{0:c} to quit".format(chr(ord(EXIT_CHAR) + ord("@")))
+        epilog="Press Control-{0:c} to quit".format(ord(EXIT_CHAR) + ord("@"))
     )
     parser.add_argument(
         "-b", "--baud",

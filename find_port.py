@@ -1,4 +1,5 @@
-#!/usr/bin/python -u
+#!/usr/bin/python3 -u
+# -*- coding: utf-8 -*-
 
 # Source: Dave Hylands USB monitor at
 # https://github.com/dhylands/usb-ser-mon/blob/master/find_port.py
@@ -23,8 +24,6 @@ in scripts where you want to pass the name of the serial port into a
 utiity to open.
 
 """
-
-from __future__ import print_function
 
 import select
 import pyudev
@@ -70,9 +69,9 @@ def is_usb_serial(device, args):
 def extra_info(device):
     extra_items = []
     if "ID_VENDOR" in device:
-        extra_items.append("vendor '%s'" % device["ID_VENDOR"])
+        extra_items.append("vendor '{0}'".format(device["ID_VENDOR"]))
     if "ID_SERIAL_SHORT" in device:
-        extra_items.append("serial '%s'" % device["ID_SERIAL_SHORT"])
+        extra_items.append("serial '{0}'".format(device["ID_SERIAL_SHORT"]))
     if extra_items:
         return " with " + " ".join(extra_items)
     return ""
@@ -129,7 +128,7 @@ def main():
     args = parser.parse_args(sys.argv[1:])
 
     if args.verbose:
-        print("pyudev version = %s" % pyudev.__version__)
+        print("pyudev version = {0}".format(pyudev.__version__))
 
     context = pyudev.Context()
 
@@ -137,9 +136,11 @@ def main():
         detected = False
         for device in context.list_devices(subsystem="tty"):
             if is_usb_serial(device, args):
-                print("USB Serial Device %s:%s%s found @%s\r" % (
-                      device["ID_VENDOR_ID"], device["ID_MODEL_ID"],
-                      extra_info(device), device.device_node))
+                print("USB Serial Device {0}:{1}{2} found @{3}\r".format(
+                      device["ID_VENDOR_ID"],
+                      device["ID_MODEL_ID"],
+                      extra_info(device),
+                      device.device_node))
                 detected = True
         if not detected:
             print("No USB Serial devices detected.\r")

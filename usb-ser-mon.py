@@ -26,16 +26,16 @@ import time
 EXIT_CHAR = chr(ord("X") - ord("@"))    # Control-X
 
 
-def log(str, end="\n"):
+def log(entry, eol="\n"):
     global LOG_FILE
-    if str[-1] == "\r":
-        str = str[:-1]
-    print(str, end=end, file=LOG_FILE)
+    if entry[-1] == "\r":
+        entry = entry[:-1]
+    print(entry, end=eol, file=LOG_FILE)
 
 
-def log_print(str, end="\n"):
-    print(str, end=end)
-    log(str, end=end)
+def log_print(entry, eol="\n"):
+    print(entry, end=eol)
+    log(entry, eol=eol)
 
 
 def is_usb_serial(device, serial_num=None, vendor=None):
@@ -153,7 +153,7 @@ def usb_serial_mon(monitor, device, baud=115200, debug=False, echo=False):
                     pos = nl_pos + 2
                 sys.stdout.write(data)
                 sys.stdout.flush()
-                log(data, end="")
+                log(data, eol="")
             if fileno == sys.stdin.fileno():
                 data = sys.stdin.read(1)
                 if debug:

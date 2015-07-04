@@ -1,5 +1,8 @@
 #!/usr/bin/python -u
 
+# Source: Dave Hylands USB monitor at
+# https://github.com/dhylands/usb-ser-mon/blob/master/find_port.py
+
 """Program which detects USB serial ports.
 
 This program will search for a USB serial port using a search criteria.

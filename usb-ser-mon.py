@@ -1,5 +1,8 @@
 #!/usr/bin/python -u
 
+# Source: Dave Hylands USB monitor at
+# https://github.com/dhylands/usb-ser-mon/blob/master/usb-ser-mon.py
+
 """Program which auto-connects to USB serial devices.
 
 This program waits for the device to be connected and when the device

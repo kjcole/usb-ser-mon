@@ -23,15 +23,18 @@ import time
 
 EXIT_CHAR = chr(ord('X') - ord('@'))    # Control-X
 
+
 def log(str, end='\n'):
     global LOG_FILE
     if str[-1] == '\r':
         str = str[:-1]
     print(str, end=end, file=LOG_FILE)
 
+
 def log_print(str, end='\n'):
     print(str, end=end)
     log(str, end=end)
+
 
 def is_usb_serial(device, serial_num=None, vendor=None):
     """Checks device to see if its a USB Serial device.
@@ -43,10 +46,10 @@ def is_usb_serial(device, serial_num=None, vendor=None):
     """
     if 'ID_VENDOR' not in device:
         return False
-    if not vendor is None:
+    if vendor is not None:
         if not device['ID_VENDOR'].startswith(vendor):
             return False
-    if not serial_num is None:
+    if serial_num is not None:
         if device['ID_SERIAL_SHORT'] != serial_num:
             return False
     return True
@@ -164,6 +167,7 @@ def usb_serial_mon(monitor, device, baud=115200, debug=False, echo=False):
                     serial_port.write(data)
                 time.sleep(0.002)
 
+
 def main():
     """The main program."""
     global LOG_FILE
@@ -266,9 +270,14 @@ def main():
 
         # Check to see if the USB Serial device is already present.
         for device in context.list_devices(subsystem='tty'):
-            if is_usb_serial(device, serial_num=args.serial, vendor=args.vendor):
-                usb_serial_mon(monitor, device, baud=args.baud,
-                        debug=args.debug, echo=args.echo)
+            if is_usb_serial(device,
+                             serial_num=args.serial,
+                             vendor=args.vendor):
+                usb_serial_mon(monitor,
+                               device,
+                               baud=args.baud,
+                               debug=args.debug,
+                               echo=args.echo)
 
         # Otherwise wait for the teensy device to connect
         while True:
@@ -288,9 +297,14 @@ def main():
                         device = monitor.poll()
                         if device.action != 'add':
                             continue
-                        if is_usb_serial(device, serial_num=args.serial, vendor=args.vendor):
-                            usb_serial_mon(monitor, device, baud=args.baud,
-                                debug=args.debug, echo=args.echo)
+                        if is_usb_serial(device,
+                                         serial_num=args.serial,
+                                         vendor=args.vendor):
+                            usb_serial_mon(monitor,
+                                           device,
+                                           baud=args.baud,
+                                           debug=args.debug,
+                                           echo=args.echo)
                             break
                     if fileno == sys.stdin.fileno():
                         data = sys.stdin.read(1)

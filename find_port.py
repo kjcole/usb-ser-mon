@@ -34,6 +34,7 @@ import time
 
 EXIT_CHAR = chr(ord('X') - ord('@'))    # Control-X
 
+
 def is_usb_serial(device, args):
     """Checks device to see if its a USB Serial device.
 
@@ -44,16 +45,16 @@ def is_usb_serial(device, args):
     """
     if 'ID_VENDOR' not in device:
         return False
-    if not args.vid is None:
+    if args.vid is not None:
         if device['ID_VENDOR_ID'] != args.vid:
             return False
-    if not args.pid is None:
+    if args.pid is not None:
         if device['ID_MODEL_ID'] != args.pid:
             return False
-    if not args.vendor is None:
+    if args.vendor is not None:
         if not device['ID_VENDOR'].startswith(args.vendor):
             return False
-    if not args.serial is None:
+    if args.serial is not None:
         if not device['ID_SERIAL_SHORT'].startswith(args.serial):
             return False
     return True

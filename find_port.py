@@ -34,45 +34,45 @@ import syslog
 import argparse
 import time
 
-EXIT_CHAR = chr(ord('X') - ord('@'))    # Control-X
+EXIT_CHAR = chr(ord("X") - ord("@"))    # Control-X
 
 
 def is_usb_serial(device, args):
     """Checks device to see if its a USB Serial device.
 
-    The caller already filters on the subsystem being 'tty'.
+    The caller already filters on the subsystem being "tty".
 
     If serial_num or vendor is provided, then it will further check to
     see if the serial number and vendor of the device also matches.
 
     """
 
-    if 'ID_VENDOR' not in device:
+    if "ID_VENDOR" not in device:
         return False
     if args.vid is not None:
-        if device['ID_VENDOR_ID'] != args.vid:
+        if device["ID_VENDOR_ID"] != args.vid:
             return False
     if args.pid is not None:
-        if device['ID_MODEL_ID'] != args.pid:
+        if device["ID_MODEL_ID"] != args.pid:
             return False
     if args.vendor is not None:
-        if not device['ID_VENDOR'].startswith(args.vendor):
+        if not device["ID_VENDOR"].startswith(args.vendor):
             return False
     if args.serial is not None:
-        if not device['ID_SERIAL_SHORT'].startswith(args.serial):
+        if not device["ID_SERIAL_SHORT"].startswith(args.serial):
             return False
     return True
 
 
 def extra_info(device):
     extra_items = []
-    if 'ID_VENDOR' in device:
-        extra_items.append("vendor '%s'" % device['ID_VENDOR'])
-    if 'ID_SERIAL_SHORT' in device:
-        extra_items.append("serial '%s'" % device['ID_SERIAL_SHORT'])
+    if "ID_VENDOR" in device:
+        extra_items.append("vendor '%s'" % device["ID_VENDOR"])
+    if "ID_SERIAL_SHORT" in device:
+        extra_items.append("serial '%s'" % device["ID_SERIAL_SHORT"])
     if extra_items:
-        return ' with ' + ' '.join(extra_items)
-    return ''
+        return " with " + " ".join(extra_items)
+    return ""
 
 
 def main():
@@ -126,23 +126,23 @@ def main():
     args = parser.parse_args(sys.argv[1:])
 
     if args.verbose:
-        print('pyudev version = %s' % pyudev.__version__)
+        print("pyudev version = %s" % pyudev.__version__)
 
     context = pyudev.Context()
 
     if args.list:
         detected = False
-        for device in context.list_devices(subsystem='tty'):
+        for device in context.list_devices(subsystem="tty"):
             if is_usb_serial(device, args):
-                print('USB Serial Device %s:%s%s found @%s\r' % (
-                      device['ID_VENDOR_ID'], device['ID_MODEL_ID'],
+                print("USB Serial Device %s:%s%s found @%s\r" % (
+                      device["ID_VENDOR_ID"], device["ID_MODEL_ID"],
                       extra_info(device), device.device_node))
                 detected = True
         if not detected:
-            print('No USB Serial devices detected.\r')
+            print("No USB Serial devices detected.\r")
         return
 
-    for device in context.list_devices(subsystem='tty'):
+    for device in context.list_devices(subsystem="tty"):
         if is_usb_serial(device, args):
             print(device.device_node)
             return

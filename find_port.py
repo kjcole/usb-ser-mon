@@ -3,8 +3,8 @@
 """Program which detects USB serial ports.
 
 This program will search for a USB serial port using a search criteria.
-In its simplest form, you can use the -l (--list) option to list all of
-the detected serial ports.
+In its simplest form, you can use the -l (--list) option to list all
+of the detected serial ports.
 
 You can also add the following filters:
 
@@ -13,10 +13,12 @@ You can also add the following filters:
 --vendor Micro  Will only match devices whose vendor name starts with Micro
 --seral  00123  Will only match devices whose serial number stats with 00123
 
-If you use -l or --list then detailed information about all of the matches
-will be printed. If you don't use -l (or --list) then only the name of
-the device will be printed (i.e. /dev/ttyACM0). This is useful in scripts
-where you want to pass the name of the serial port into a utiity to open.
+If you use -l or --list then detailed information about all of the
+matches will be printed. If you don't use -l (or --list) then only the
+name of the device will be printed (i.e. /dev/ttyACM0). This is useful
+in scripts where you want to pass the name of the serial port into a
+utiity to open.
+
 """
 
 from __future__ import print_function
@@ -42,7 +44,9 @@ def is_usb_serial(device, args):
 
     If serial_num or vendor is provided, then it will further check to
     see if the serial number and vendor of the device also matches.
+
     """
+
     if 'ID_VENDOR' not in device:
         return False
     if args.vid is not None:

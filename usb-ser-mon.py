@@ -2,9 +2,9 @@
 
 """Program which auto-connects to USB serial devices.
 
-This program waits for the device to be connected and when the device is
-disconnected, then it will go back to waiting for a device to once again
-be connected.
+This program waits for the device to be connected and when the device
+is disconnected, then it will go back to waiting for a device to once
+again be connected.
 
 """
 
@@ -43,7 +43,9 @@ def is_usb_serial(device, serial_num=None, vendor=None):
 
     If serial_num or vendor is provided, then it will further check to
     see if the serial number and vendor of the device also matches.
+
     """
+
     if 'ID_VENDOR' not in device:
         return False
     if vendor is not None:
@@ -77,6 +79,7 @@ def usb_serial_mon(monitor, device, baud=115200, debug=False, echo=False):
     disconnected).
 
     """
+
     port_name = device.device_node
     log_print('USB Serial device%s connected @%s\r' % (
               extra_info(device), port_name))
@@ -170,6 +173,7 @@ def usb_serial_mon(monitor, device, baud=115200, debug=False, echo=False):
 
 def main():
     """The main program."""
+    
     global LOG_FILE
 
     default_baud = 115200

@@ -60,9 +60,11 @@ def is_usb_serial(device, serial_num=None, vendor=None):
 def extra_info(device):
     extra_items = []
     if "ID_VENDOR" in device:
-        extra_items.append("vendor '{0}'".format(device["ID_VENDOR"]))
+        extra_items.append("vendor '{0}'"
+                           .format(device["ID_VENDOR"]))
     if "ID_SERIAL_SHORT" in device:
-        extra_items.append("serial '{0}'".format(device["ID_SERIAL_SHORT"]))
+        extra_items.append("serial '{0}'"
+                           .format(device["ID_SERIAL_SHORT"]))
     if extra_items:
         return " with " + " ".join(extra_items)
     return ""
@@ -80,9 +82,10 @@ def usb_serial_mon(monitor, device, baud=115200, debug=False, echo=False):
     """
 
     port_name = device.device_node
-    log_print("USB Serial device{0} connected @{1}\r".format(
-              extra_info(device), port_name))
-    log_print("Use Control-{0:c} to exit.\r".format(ord(EXIT_CHAR) + ord("@")))
+    log_print("USB Serial device{0} connected @{1}\r"
+              .format(extra_info(device), port_name))
+    log_print("Use Control-{0:c} to exit.\r"
+              .format(ord(EXIT_CHAR) + ord("@")))
 
     if device["ID_VENDOR"].startswith("Synthetos"):
         echo = True
@@ -101,7 +104,8 @@ def usb_serial_mon(monitor, device, baud=115200, debug=False, echo=False):
                                     rtscts=False,
                                     dsrdtr=False)
     except serial.serialutil.SerialException:
-        log_print("Unable to open port '{0}'\r".format(port_name))
+        log_print("Unable to open port '{0}'\r"
+                  .format(port_name))
         return
 
     serial_fd = serial_port.fileno()
@@ -122,7 +126,8 @@ def usb_serial_mon(monitor, device, baud=115200, debug=False, echo=False):
                 if ((dev.device_node != port_name) or
                     (dev.action      != "remove")):
                     continue
-                log_print("USB Serial device @{0} disconnected.\r".format(port_name))
+                log_print("USB Serial device @{0} disconnected.\r"
+                          .format(port_name))
                 log_print("\r")
                 serial_port.close()
                 return
@@ -130,13 +135,15 @@ def usb_serial_mon(monitor, device, baud=115200, debug=False, echo=False):
                 try:
                     data = serial_port.read(256)
                 except serial.serialutil.SerialException:
-                    log_print("USB Serial device @{0} disconnected.\r".format(port_name))
+                    log_print("USB Serial device @{0} disconnected.\r"
+                              .format(port_name))
                     log_print("\r")
                     serial_port.close()
                     return
                 if debug:
                     for x in data:
-                        log_print("Serial.Read '{0:c}' 0x{0:02X}\r".format(ord(x)))
+                        log_print("Serial.Read '{0:c}' 0x{0:02X}\r"
+                                  .format(ord(x)))
                 pos = 0
                 while True:
                     nl_pos = data.find(b"\n", pos)
@@ -155,7 +162,8 @@ def usb_serial_mon(monitor, device, baud=115200, debug=False, echo=False):
                 data = sys.stdin.read(1)
                 if debug:
                     for x in data:
-                        log_print("stdin.Read '{0:c}' 0x{0:02X}\r".format(ord(x)))
+                        log_print("stdin.Read '{0:c}' 0x{0:02X}\r"
+                                  .format(ord(x)))
                 if data[0] == EXIT_CHAR:
                     raise KeyboardInterrupt
                 if echo:
@@ -181,7 +189,8 @@ def main():
         prog="usb-ser-mon.py",
         usage="%(prog)s [options] [command]",
         description="Monitor serial output from USB Serial devices",
-        epilog="Press Control-{0:c} to quit".format(ord(EXIT_CHAR) + ord("@"))
+        epilog="Press Control-{0:c} to quit"
+               .format(ord(EXIT_CHAR) + ord("@"))
     )
 
     parser.add_argument(
@@ -189,7 +198,8 @@ def main():
         dest="baud",
         action="store",
         type=int,
-        help="Set the baudrate used (default = {0:d})".format(default_baud),
+        help="Set the baudrate used (default = {0:d})"
+             .format(default_baud),
         default=default_baud
     )
 
@@ -247,8 +257,10 @@ def main():
     LOG_FILE = open(args.log, "w", newline="\n")
 
     if args.verbose:
-        log_print("pyudev version = {0}".format(pyudev.__version__))
-        log_print("echo = {0:d}".format(args.echo))
+        log_print("pyudev version = {0}"
+                  .format(pyudev.__version__))
+        log_print("echo = {0:d}"
+                  .format(args.echo))
 
     context = pyudev.Context()
     context.log_priority = syslog.LOG_NOTICE
@@ -257,8 +269,8 @@ def main():
         detected = False
         for device in context.list_devices(subsystem="tty"):
             if is_usb_serial(device):
-                log_print("USB Serial Device{0} found @{1}\r".format(
-                          extra_info(device), device.device_node))
+                log_print("USB Serial Device{0} found @{1}\r"
+                          .format(extra_info(device), device.device_node))
                 detected = True
         if not detected:
             log_print("No USB Serial devices detected.\r")
@@ -299,7 +311,8 @@ def main():
                 dev["ID_SERIAL_SHORT"] = args.serial
             if args.vendor:
                 dev["ID_VENDOR"] = args.vendor
-            log_print("Waiting for USB Serial Device{0} ...\r".format(extra_info(dev)))
+            log_print("Waiting for USB Serial Device{0} ...\r"
+                      .format(extra_info(dev)))
             epoll = select.epoll()
             epoll.register(monitor.fileno(), select.POLLIN)
             epoll.register(sys.stdin.fileno(), select.POLLIN)

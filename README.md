@@ -1,7 +1,8 @@
 usb-ser-mon.py
 ==============
 
-A serial monitor for USB Serial devices.
+A serial monitor for USB Serial devices, slightly forked from Dave Hylands
+version at https://github.com/dhylands/usb-ser-mon/blob/master/usb-ser-mon.py
 
 usb-ser-mon.py will automatically detect your connected USB Serial device and
 print the output from it.
@@ -20,7 +21,7 @@ It was tested with the following devices:
   - Teensy 3.1
   - STM32F4DISCOVERY board
   - Prolific USB to Serial adapter
-
+  - Pyboard PYBv1.0 with STM32F405RG
 
 Use -l to list all of the connected devices.
 ```

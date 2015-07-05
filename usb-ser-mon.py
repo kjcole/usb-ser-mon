@@ -9,7 +9,6 @@
 This program waits for the device to be connected and when the device
 is disconnected, then it will go back to waiting for a device to once
 again be connected.
-
 """
 
 import select
@@ -45,7 +44,6 @@ def is_usb_serial(device, serial_num=None, vendor=None):
 
     If serial_num or vendor is provided, then it will further check to
     see if the serial number and vendor of the device also matches.
-
     """
 
     if "ID_VENDOR" not in device:
@@ -79,7 +77,6 @@ def usb_serial_mon(monitor, device, baud=115200, debug=False, echo=False):
 
     This function returns when the deivce disconnects (or is
     disconnected).
-
     """
 
     port_name = device.device_node
@@ -142,18 +139,18 @@ def usb_serial_mon(monitor, device, baud=115200, debug=False, echo=False):
                         log_print("Serial.Read '{0:c}' 0x{0:02X}\r".format(ord(x)))
                 pos = 0
                 while True:
-                    nl_pos = data.find("\n", pos)
+                    nl_pos = data.find(b"\n", pos)
                     if nl_pos < 0:
                         break
                     if nl_pos > 0 and data[nl_pos - 1] == "\r":
                         # already have \r before \n - just leave things be
                         pos = nl_pos + 1
                         continue
-                    data = data[:nl_pos] + "\r" + data[nl_pos:]
+                    data = data[:nl_pos] + b"\r" + data[nl_pos:]
                     pos = nl_pos + 2
-                sys.stdout.write(data)
+                sys.stdout.write(data.decode())
                 sys.stdout.flush()
-                log(data, eol="")
+                log(data.decode(), eol="")
             if fileno == sys.stdin.fileno():
                 data = sys.stdin.read(1)
                 if debug:
@@ -162,29 +159,31 @@ def usb_serial_mon(monitor, device, baud=115200, debug=False, echo=False):
                 if data[0] == EXIT_CHAR:
                     raise KeyboardInterrupt
                 if echo:
-                    sys.stdout.write(data)
+                    sys.stdout.write(data.decode())
                     if data[0] == "\r":
                         sys.stdout.write("\n")
                     sys.stdout.flush()
                 if data[0] == "\n":
                     serial_port.write("\r")
                 else:
-                    serial_port.write(data)
+                    serial_port.write(data.encode())
                 time.sleep(0.002)
 
 
 def main():
     """The main program."""
-    
+
     global LOG_FILE
 
     default_baud = 115200
+
     parser = argparse.ArgumentParser(
         prog="usb-ser-mon.py",
         usage="%(prog)s [options] [command]",
         description="Monitor serial output from USB Serial devices",
         epilog="Press Control-{0:c} to quit".format(ord(EXIT_CHAR) + ord("@"))
     )
+
     parser.add_argument(
         "-b", "--baud",
         dest="baud",
@@ -193,6 +192,7 @@ def main():
         help="Set the baudrate used (default = {0:d})".format(default_baud),
         default=default_baud
     )
+
     parser.add_argument(
         "-d", "--debug",
         dest="debug",
@@ -200,6 +200,7 @@ def main():
         help="Turn on debugging",
         default=False
     )
+
     parser.add_argument(
         "-e", "--echo",
         dest="echo",
@@ -207,28 +208,33 @@ def main():
         help="Turn on local echo",
         default=False
     )
+
     parser.add_argument(
         "-l", "--list",
         dest="list",
         action="store_true",
         help="List USB Serial devices currently connected"
     )
+
     parser.add_argument(
         "-s", "--serial",
         dest="serial",
         help="Connect to USB Serial device with a given serial number"
     )
+
     parser.add_argument(
         "--log",
         dest="log",
         default="usb-ser-mon.log",
         help="Log the session to a file."
     )
+
     parser.add_argument(
         "-n", "--vendor",
         dest="vendor",
         help="Connect to USB Serial device with a given vendor"
     )
+
     parser.add_argument(
         "-v", "--verbose",
         dest="verbose",
@@ -236,8 +242,9 @@ def main():
         help="Turn on verbose messages",
         default=False
     )
+
     args = parser.parse_args(sys.argv[1:])
-    LOG_FILE = open(args.log, "w")
+    LOG_FILE = open(args.log, "w", newline="\n")
 
     if args.verbose:
         log_print("pyudev version = {0}".format(pyudev.__version__))
